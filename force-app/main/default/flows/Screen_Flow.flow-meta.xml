@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
+        <name>New_Event</name>
+        <label>New Event</label>
+        <locationX>719</locationX>
+        <locationY>646</locationY>
+        <actionName>NewEvent</actionName>
+        <actionType>quickAction</actionType>
+        <connector>
+            <targetReference>Event_Success_Screen</targetReference>
+        </connector>
+        <inputParameters>
+            <name>Subject</name>
+            <value>
+                <elementReference>screen_subject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>StartDateTime</name>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>IsAllDayEvent</name>
+            <value>
+                <elementReference>screen_all_day</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>OwnerId</name>
+            <value>
+                <elementReference>Assign_User_Id.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>Location</name>
+            <value>
+                <elementReference>screen_location</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>EndDateTime</name>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
         <name>New_Task</name>
         <label>New Task</label>
         <locationX>1115</locationX>
@@ -146,6 +193,14 @@
         </value>
     </choices>
     <choices>
+        <name>eventChoice</name>
+        <choiceText>Trigger an Event</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Trigger an Event</stringValue>
+        </value>
+    </choices>
+    <choices>
         <name>notificationChoice</name>
         <choiceText>Send a Notification</choiceText>
         <dataType>String</dataType>
@@ -258,6 +313,21 @@
             </connector>
             <label>Create a Task</label>
         </rules>
+        <rules>
+            <name>Trigger_an_Event</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>flow</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>eventChoice</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Event_Screen</targetReference>
+            </connector>
+            <label>Trigger an Event</label>
+        </rules>
     </decisions>
     <decisions>
         <name>Update_or_Create</name>
@@ -325,7 +395,7 @@
     <recordCreates>
         <name>Create_Contact</name>
         <label>Create Contact</label>
-        <locationX>623</locationX>
+        <locationX>602</locationX>
         <locationY>685</locationY>
         <connector>
             <targetReference>Confirm</targetReference>
@@ -475,6 +545,7 @@
             <choiceReferences>screenChoice</choiceReferences>
             <choiceReferences>notificationChoice</choiceReferences>
             <choiceReferences>taskChoice</choiceReferences>
+            <choiceReferences>eventChoice</choiceReferences>
             <dataType>String</dataType>
             <fieldText>What would you like Flow to do?</fieldText>
             <fieldType>RadioButtons</fieldType>
@@ -486,8 +557,8 @@
     <screens>
         <name>Confirm</name>
         <label>Confirm</label>
-        <locationX>622</locationX>
-        <locationY>843</locationY>
+        <locationX>601</locationX>
+        <locationY>842</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
@@ -556,6 +627,65 @@
             </inputParameters>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Event_Screen</name>
+        <label>Event Screen</label>
+        <locationX>691</locationX>
+        <locationY>473</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>New_Event</targetReference>
+        </connector>
+        <fields>
+            <name>screen_label</name>
+            <fieldText>&lt;p&gt;Create an Event today.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>screen_subject</name>
+            <dataType>String</dataType>
+            <fieldText>Subject</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>screen_location</name>
+            <dataType>String</dataType>
+            <fieldText>Location</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <fields>
+            <name>screen_all_day</name>
+            <dataType>Boolean</dataType>
+            <defaultValue>
+                <booleanValue>false</booleanValue>
+            </defaultValue>
+            <fieldText>All Day</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Event_Success_Screen</name>
+        <label>Event Success Screen</label>
+        <locationX>724</locationX>
+        <locationY>826</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <fields>
+            <name>success_event_text</name>
+            <fieldText>&lt;p&gt;You just created a new event called {!screen_subject} that takes place today in &lt;span style=&quot;font-family: var(--lwc-fontFamily,&amp;quot;Salesforce Sans&amp;quot;, Arial, sans-serif); font-size: var(--lwc-fontSize3,0.8125rem); color: var(--lwc-colorTextWeak,rgb(62, 62, 60)); background-color: var(--lwc-colorBackgroundInput,rgb(255, 255, 255));&quot;&gt;{!screen_location}.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-family: var(--lwc-fontFamily,&amp;quot;Salesforce Sans&amp;quot;, Arial, sans-serif); font-size: var(--lwc-fontSize3,0.8125rem); color: var(--lwc-colorTextWeak,rgb(62, 62, 60)); background-color: var(--lwc-colorBackgroundInput,rgb(255, 255, 255));&quot;&gt;You can see it &lt;/span&gt;&lt;u style=&quot;font-family: var(--lwc-fontFamily,&amp;quot;Salesforce Sans&amp;quot;, Arial, sans-serif); font-size: var(--lwc-fontSize3,0.8125rem); color: rgb(0, 68, 255); background-color: var(--lwc-colorBackgroundInput,rgb(255, 255, 255));&quot;&gt;here&lt;/u&gt;&lt;span style=&quot;font-family: var(--lwc-fontFamily,&amp;quot;Salesforce Sans&amp;quot;, Arial, sans-serif); font-size: var(--lwc-fontSize3,0.8125rem); color: var(--lwc-colorTextWeak,rgb(62, 62, 60)); background-color: var(--lwc-colorBackgroundInput,rgb(255, 255, 255));&quot;&gt;.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
