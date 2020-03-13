@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#3CC2B3</headerColor>
+        <logo>onboarding</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Onboarding</label>
+    <navType>Standard</navType>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>standard-Feed</tabs>
+    <tabs>Employee__c</tabs>
+    <tabs>standard-OtherUserProfile</tabs>
+    <tabs>standard-TimeSheet</tabs>
+    <tabs>standard-ProcessInstanceWorkitem</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>Onboarding_UtilityBar</utilityBar>
+</CustomApplication>
